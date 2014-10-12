@@ -8,7 +8,7 @@ from kivy.properties import NumericProperty, ObjectProperty, Property
 from kivy.uix.filechooser import FileChooserListView
 
 import mav_parse as mp
-import TelemetryGraph as tg
+import screens.TelemetryGraph as tg
 
 class ScreenManager(FloatLayout):
     log = None
