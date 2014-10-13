@@ -8,7 +8,8 @@ from kivy.properties import NumericProperty, ObjectProperty, Property
 from kivy.uix.filechooser import FileChooserListView
 
 import mav_parse as mp
-import TelemetryGraph as tg
+import screens.TelemetryGraph as tg
+from screens.ReadLog import Reader
 
 class ScreenManager(FloatLayout):
     log = None
@@ -38,7 +39,7 @@ class ScreenManager(FloatLayout):
         obj.add_widget(mode_menu)
 
     def readlog(obj,value):
-        rl = ReadLog()
+        rl = Reader()
         rl.log = obj.log
         rl.DisplayLog()
         obj.clear_widgets()
@@ -54,22 +55,6 @@ class ModeMenu(Widget):
     readbtn = ObjectProperty(Button)
     graphbtn = ObjectProperty(Button)
     log = None
-
-class ReadLog(Widget):
-    log = None
-    log_text = Property('<Log_Text>')
-    packetlimit = 150
-    def DisplayLog(self):
-        log_text = ''
-        for i in range(len(self.log)):
-            if i < self.packetlimit:
-                log_text += str(self.log[i])
-                log_text += '\n'
-
-            if i >=  self.packetlimit:
-                log_text += "\n \n \n  ... Output truncated to " + str(self.packetlimit) + " packets"
-                break
-        self.log_text.text = log_text
 
 class LogViewApp(App):
     def build(self):

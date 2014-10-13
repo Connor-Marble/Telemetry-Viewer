@@ -5,7 +5,7 @@ from kivy.uix.checkbox import CheckBox
 
 import math
 
-from libs.Mavlink.apm_mavlink_v1 import *
+from ..libs.Mavlink.apm_mavlink_v1 import *
 
 class TelemetryGraphScreen():
     
