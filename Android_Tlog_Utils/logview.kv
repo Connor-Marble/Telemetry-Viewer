@@ -45,18 +45,21 @@
 
 <ReadLog>
 	log_text: scroll_label_text
-	ScrollView:
-		id:scrollview
-		pos: root.pos
+	Label:
+		id: scroll_label_text
+		size_hint_y: None
+		size_hint_x: None
+		font_size: 18
+		text: "log here"
+		height: self.texture_size[1]
 		width: root.width
-		height:root.height			
+		text_size: self.width, None
+	Button:
+		id: up_button
+		top: root.top
+		text: '^'
 
-		Label:
-			id: scroll_label_text
-			size_hint_y: None
-			size_hint_x: None
-			font_size: 18
-			text: "log here"
-			height: self.texture_size[1]
-			width: root.width
-			text_size: self.width, None
+	Button:
+		id: down_button
+		top: root.top
+		text: 'V'
