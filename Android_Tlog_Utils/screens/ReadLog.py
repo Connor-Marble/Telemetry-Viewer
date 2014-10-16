@@ -15,7 +15,7 @@ class Reader(Widget):
                 log_text += '\n'
 
             if i >= self.packetlimit:
-                log_text += "\n \n \n  ... Output truncated to " +
+                log_text += "\n \n \n  ... Output truncated to " +\
                 str(self.packetlimit) + " packets"
                 break
         self.log_text.text = log_text
