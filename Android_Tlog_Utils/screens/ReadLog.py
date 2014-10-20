@@ -12,7 +12,7 @@ class Reader(Widget):
     log_text = ObjectProperty(Label)
 
     scroll_down = ObjectProperty(Button)
-
+    scroll_up = ObjectProperty(Button)
 
     lines = 25 #TODO get number of lines based on screen height
     scrollpos = 0
@@ -20,6 +20,7 @@ class Reader(Widget):
     def __init__(self,**kwargs):
         super(Reader,self).__init__()
         self.scroll_down.bind(on_press=self.scroll)
+        self.scroll_up.bind(on_press=self.scroll)
 
     def DisplayLog(self):
         log_text = ''
@@ -31,7 +32,10 @@ class Reader(Widget):
         self.log_text.text = log_text
     
     def scroll(instance, value):
-        instance.scrollpos += 1
+        buttonText = value.text
+
+        instance.scrollpos += 1 if buttonText == 'V' else -1
+        
         instance.DisplayLog()
 
     
