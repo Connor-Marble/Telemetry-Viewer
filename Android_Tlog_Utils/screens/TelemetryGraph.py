@@ -1,10 +1,10 @@
-from kivy.garden.graph import Graph, MeshLinePlot
 from kivy.uix.widget import Widget
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.checkbox import CheckBox
 
 import math
 
+from ..libs.garden.graph import Graph, MeshLinePlot
 from ..libs.Mavlink.apm_mavlink_v1 import *
 
 class TelemetryGraphScreen():
