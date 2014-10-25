@@ -1,4 +1,7 @@
 from kivy.app import App
+
+from kivy.base import EventLoop
+
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.uix.label import Label
@@ -15,6 +18,8 @@ class ScreenManager(FloatLayout):
     log = None
     def __init__(self,**kwargs):
         super(ScreenManager,self).__init__(**kwargs)
+
+        EventLoop.window.bind(on_keyboard=self.goback)
         
         self.startmenu = StartMenu()
         self.startmenu.filebtn.bind(on_press=self.selectfile)
@@ -35,8 +40,7 @@ class ScreenManager(FloatLayout):
         mode_menu.readbtn.bind(on_press=obj.readlog)
         mode_menu.graphbtn.bind(on_press=obj.graphlog)
 
-        obj.clear_widgets()
-        obj.add_widget(mode_menu)
+        obj.switchscreen(mode_menu)
 
     def readlog(obj,value):
         rl = Reader()
@@ -47,6 +51,15 @@ class ScreenManager(FloatLayout):
 
     def graphlog(obj,value):
         graph = tg.TelemetryGraphScreen(obj,obj.log)
+
+    def switchscreen(self, widget):
+        self.clear_widgets()
+        self.add_widget(widget)
+    
+    def goback(self, window, key, *args):
+        if key==27:
+            self.switchscreen(self.startmenu)
+            return True
 
 class StartMenu(Widget):
     filebtn = ObjectProperty(Button)
