@@ -61,14 +61,6 @@ class ScreenManager(FloatLayout):
             self.switchscreen(self.startmenu)
             return True
 
-class StartMenu(Widget):
-    filebtn = ObjectProperty(Button)
-
-class ModeMenu(Widget):
-    readbtn = ObjectProperty(Button)
-    graphbtn = ObjectProperty(Button)
-    log = None
-
 class LogViewApp(App):
     def build(self):
         return ScreenManager()

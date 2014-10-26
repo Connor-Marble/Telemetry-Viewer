@@ -74,3 +74,11 @@ class TelemetryGraphScreen():
         return graph
     
     
+class StartMenu(Widget):
+    filebtn = ObjectProperty(Button)
+
+class ModeMenu(Widget):
+    readbtn = ObjectProperty(Button)
+    graphbtn = ObjectProperty(Button)
+    log = None
+
