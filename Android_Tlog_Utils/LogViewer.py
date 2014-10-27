@@ -42,8 +42,7 @@ class ScreenManager(FloatLayout):
         obj.switchscreen(mode_menu)
 
     def readlog(obj,value):
-        rl = Reader()
-        rl.log = obj.log
+        rl = Reader(obj.log)
         rl.DisplayLog()
         obj.clear_widgets()
         obj.add_widget(rl)
