@@ -11,8 +11,7 @@ from kivy.properties import NumericProperty, ObjectProperty, Property
 from kivy.uix.filechooser import FileChooserListView
 
 import mav_parse as mp
-import screens.TelemetryGraph as tg
-from screens.ReadLog import Reader
+from widgets.screens import Reader, TelemetryGraphScreen, StartMenu, ModeMenu
 
 class ScreenManager(FloatLayout):
     log = None
@@ -50,7 +49,7 @@ class ScreenManager(FloatLayout):
         obj.add_widget(rl)
 
     def graphlog(obj,value):
-        graph = tg.TelemetryGraphScreen(obj,obj.log)
+        graph = TelemetryGraphScreen(obj,obj.log)
 
     def switchscreen(self, widget):
         self.clear_widgets()
@@ -60,14 +59,6 @@ class ScreenManager(FloatLayout):
         if key==27:
             self.switchscreen(self.startmenu)
             return True
-
-class StartMenu(Widget):
-    filebtn = ObjectProperty(Button)
-
-class ModeMenu(Widget):
-    readbtn = ObjectProperty(Button)
-    graphbtn = ObjectProperty(Button)
-    log = None
 
 class LogViewApp(App):
     def build(self):
