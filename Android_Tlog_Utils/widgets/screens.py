@@ -1,14 +1,11 @@
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.checkbox import CheckBox
 from kivy.properties import ObjectProperty
 
-import math
-
 from ..libs.garden.graph import Graph, MeshLinePlot
-from ..libs.Mavlink.apm_mavlink_v1 import *        
+from ..libs.Mavlink.apm_mavlink_v1 import MAVLink_vfr_hud_message
 
 class Reader(Widget):
     log = None
@@ -19,23 +16,25 @@ class Reader(Widget):
         
     scrollpos = 0
 
-    def __init__(self,**kwargs):
+    def __init__(self, log, **kwargs):
         super(Reader,self).__init__()
         self.scroll_down.bind(on_press=self.scroll)
         self.scroll_up.bind(on_press=self.scroll)
         self.lines=super(Reader,self).height/7
         #TODO account for multi-line packages
         self.log_text.y = self.scroll_down.height
+        self.loglines = []
+        self.log = log
         
-        
+        for i in range(len(self.log)):
+            line = (str(self.log[i])+'\n')
+            self.loglines.append(line)
+            
+        print(len(self.loglines))
+        print(len(self.log))
         
     def DisplayLog(self):
-        log_text = ''
-        for i in range(self.lines):
-            if i < self.lines:
-                log_text += str(self.log[i+self.scrollpos])
-                log_text += '\n'
-
+        log_text = ''.join(self.loglines[self.scrollpos:self.lines+self.scrollpos])
         self.log_text.text = log_text
         
     
