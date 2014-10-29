@@ -43,13 +43,12 @@ class ScreenManager(FloatLayout):
 
     def readlog(obj,value):
         rl = Reader(obj.log)
-        rl.DisplayLog()
-        obj.clear_widgets()
-        obj.add_widget(rl)
-
+        obj.switchscreen(rl)
+        
     def graphlog(obj,value):
         graph = TelemetryGraphScreen(obj,obj.log)
-
+        obj.switchscreen(graph)
+        
     def switchscreen(self, widget):
         self.clear_widgets()
         self.add_widget(widget)

@@ -32,6 +32,7 @@ class Reader(Widget):
             
         print(len(self.loglines))
         print(len(self.log))
+        self.DisplayLog()
         
     def DisplayLog(self):
         log_text = ''.join(self.loglines[self.scrollpos:self.lines+self.scrollpos])
