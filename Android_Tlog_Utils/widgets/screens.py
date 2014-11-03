@@ -3,6 +3,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
 from kivy.properties import ObjectProperty
+from kivy.core.window import Window
 
 from ..libs.garden.graph import Graph, MeshLinePlot
 from ..libs.Mavlink.apm_mavlink_v1 import MAVLink_vfr_hud_message
@@ -18,32 +19,38 @@ class Reader(Widget):
 
     def __init__(self, log, **kwargs):
         super(Reader,self).__init__()
+        suReader = super(Reader, self)
         self.scroll_down.bind(on_press=self.scroll)
         self.scroll_up.bind(on_press=self.scroll)
-        self.lines=super(Reader,self).height/7
-        #TODO account for multi-line packages
-        self.log_text.y = self.scroll_down.height
+        lineheight = self.log_text.font_size + 4
+        self.lines=(Window.size[1]-200)/lineheight - 2
+        print(Window.size[1])
+        self.log_text.y = Window.size[1]/2
+        print(Window.size[1])
+        self.log_text.text_size = (None,Window.size[1]-100)
+        
+        self.log_text.shorten = True
+        
         self.loglines = []
         self.log = log
-        
+                
         for i in range(len(self.log)):
             line = (str(self.log[i])+'\n')
             self.loglines.append(line)
             
-        print(len(self.loglines))
-        print(len(self.log))
         self.DisplayLog()
         
     def DisplayLog(self):
         log_text = ''.join(self.loglines[self.scrollpos:self.lines+self.scrollpos])
         self.log_text.text = log_text
-        
+        self.log_text.texture_update()
+        self.log_text.x = self.log_text.texture_size[0]*0.5
     
     def scroll(instance, value):
         buttonText = value.text
 
         instance.scrollpos += 1 if buttonText == 'V' else -1
-        
+
         instance.DisplayLog()
 
 class TelemetryGraphScreen():
