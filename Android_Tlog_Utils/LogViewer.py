@@ -2,15 +2,12 @@ from kivy.app import App
 
 from kivy.base import EventLoop
 
-from kivy.uix.widget import Widget
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import NumericProperty, ObjectProperty, Property
 from kivy.uix.filechooser import FileChooserListView
+from kivy.clock import Clock
 
 import mav_parse as mp
+from functools import partial
 from widgets.screens import Reader, TelemetryGraphScreen, StartMenu, ModeMenu
 
 class ScreenManager(FloatLayout):
@@ -28,8 +25,8 @@ class ScreenManager(FloatLayout):
         self.filemenu.bind(on_submit=self.openfile)
 
     def selectfile(obj,value):
-        obj.clear_widgets()
-        obj.add_widget(obj.filemenu)
+        #wait for old input to clear
+        Clock.schedule_once(partial(obj.switchscreen,obj.filemenu),0.15)
 
     def openfile(obj,value,selected,event):
         obj.log = mp.TelemetryLog(selected[0]).ParsePackets()
@@ -49,7 +46,7 @@ class ScreenManager(FloatLayout):
         graph = TelemetryGraphScreen(obj,obj.log)
         obj.switchscreen(graph)
         
-    def switchscreen(self, widget):
+    def switchscreen(self, widget, *args):
         self.clear_widgets()
         self.add_widget(widget)
     
