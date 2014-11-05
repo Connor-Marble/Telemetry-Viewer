@@ -24,7 +24,6 @@ class Reader(Widget):
         self.scroll_up.bind(on_press=self.scroll)
         lineheight = self.log_text.font_size + 4
         self.lines=(Window.size[1]-200)/lineheight - 2
-        print(Window.size[1])
         self.log_text.y = Window.size[1]/2
         print(Window.size[1])
         self.log_text.text_size = (None,Window.size[1]-100)
