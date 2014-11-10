@@ -24,12 +24,8 @@ source.include_exts = py,png,jpg,kv,atlas
 # (list) List of exclusions using pattern matching
 #source.exclude_patterns = license,images/*/*.jpg
 
-# (str) Application versioning (method 1)
-version.regex = __version__ = ['"](.*)['"]
-version.filename = %(source.dir)s/main.py
-
 # (str) Application versioning (method 2)
-# version = 1.2.0
+version = 0.0.1
 
 # (list) Application requirements
 requirements = kivy
@@ -41,7 +37,7 @@ garden_requirements = graph
 #presplash.filename = %(source.dir)s/data/presplash.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+icon.filename = %(source.dir)s/data/icon.png
 
 # (str) Supported orientation (one of landscape, portrait or all)
 orientation = landscape
