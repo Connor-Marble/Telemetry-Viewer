@@ -24,19 +24,23 @@ class ScreenManager(FloatLayout):
         self.filemenu = FileChooserListView()
         self.filemenu.bind(on_submit=self.openfile)
 
+        self.mode_menu=None
+        
     def selectfile(obj,value):
         #wait for old input to clear
         Clock.schedule_once(partial(obj.switchscreen,obj.filemenu),0.15)
 
     def openfile(obj,value,selected,event):
         obj.log = mp.TelemetryLog(selected[0]).ParsePackets()
-        mode_menu = ModeMenu()
+        obj.mode_menu = ModeMenu()
        
 
-        mode_menu.readbtn.bind(on_press=obj.readlog)
-        mode_menu.graphbtn.bind(on_press=obj.graphlog)
+        obj.mode_menu.readbtn.bind(on_press=obj.readlog)
+        obj.mode_menu.graphbtn.bind(on_press=obj.graphlog)
 
-        obj.switchscreen(mode_menu)
+        obj.mode_menu
+        
+        obj.switchscreen(obj.mode_menu)
 
     def readlog(obj,value):
         rl = Reader(obj.log)
@@ -52,7 +56,18 @@ class ScreenManager(FloatLayout):
     
     def goback(self, window, key, *args):
         if key==27:
-            self.switchscreen(self.startmenu)
+            exit_on_back = StartMenu
+            startmenu_on_back = (FileChooserListView,ModeMenu)
+  
+            
+            if isinstance(self.children[0], exit_on_back):
+                return False
+
+            if isinstance(self.children[0],startmenu_on_back):
+                self.switchscreen(self.startmenu)
+            else:
+                self.switchscreen(self.mode_menu)
+            
             return True
 
 class LogViewApp(App):
