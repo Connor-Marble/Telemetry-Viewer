@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = Tlog Viewer
+title = Telemetry Viewer
 
 # (str) Package name
 package.name = net.Quadforge.TlogViewer
