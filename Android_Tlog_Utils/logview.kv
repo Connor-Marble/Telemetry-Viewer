@@ -1,65 +1,66 @@
 #:kivy 1.7.2
 
 <StartMenu>:
-	filebtn: file_select_button
+    filebtn: file_select_button
 
-	Label:
-		font_size: 70
-		center_x: root.center_x
-		top: root.top
-		text: "Log Viewer"
+    Label:
+        font_size: 70
+        center_x: root.center_x
+        top: root.top
+        text: "Log Viewer"
 
-	Button:
-		id: file_select_button
-		font_size: 30
-		center_x: root.center_x
-		center_y: root.center_y
-		width: 240
-		text: "Select\nTelemetry Log"
+    Button:
+        id: file_select_button
+        font_size: 30
+        center_x: root.center_x
+        center_y: root.center_y
+        width: 240
+        text: "Select\nTelemetry Log"
 
-<ModeMenu>
-	readbtn: read_log_button
-	graphbtn:graph_log_button
+<ModeMenu>:
+    readbtn: read_log_button
+    graphbtn:graph_log_button
 
-	Label:
-		font_size: 50
-		center_x: root.center_x
-		top: root.top
-		text: "Select Mode"
-		
-	Button:
-		id:read_log_button
-		font_size: 30
-		center_x: root.center_x
-		center_y: root.height * 1/3
-		width: 240
-		text: "Read Log"
+    Label:
+        font_size: 50
+        center_x: root.center_x
+        top: root.top
+        text: "Select Mode"
+        
+        Button:
+            id:read_log_button
+            font_size: 30
+            center_x: root.center_x
+            center_y: root.height * 1/3
+            width: 240
+            text: "Read Log"
 
-	Button:
-		id:graph_log_button
-		font_size: 30
-		center_x: root.center_x
-		center_y: root.height * 2/3
-		width: 240
-		text: "Graph Log"
+        Button:
+            id:graph_log_button
+            font_size: 30
+            center_x: root.center_x
+            center_y: root.height * 2/3
+            width: 240
+            text: "Graph Log"
 
-<Reader>
-	log_text: scroll_label_text
-	scroll_up: up_button
-	scroll_down: down_button
+<Reader>:
+    log_text: scroll_label_text
+    scroll_up: up_button
+    scroll_down: down_button
 
-	Label:
-		id: scroll_label_text
-		font_size: 18
-		text: "log here"
-		x:800
+    Label:
+        id: scroll_label_text
+        font_size: 18
+        text: "log here"
+        x:800
 
-	Button:
-		id: up_button
-		top: root.top
-		text: '^'
+        Button:
+            id: up_button
+            top: root.top
+            text: '^'
 
-	Button:
-		id: down_button
-		top: self.height
-		text: 'V'
+        Button:
+            id: down_button
+            top: self.height
+            text: 'V'
+
