@@ -45,8 +45,8 @@
 
 <Reader>:
     log_text: scroll_label_text
-    scroll_up: up_button
-    scroll_down: down_button
+    scroll_up: up_btn
+    scroll_down: down_btn
 
     Label:
         id: scroll_label_text
@@ -54,13 +54,25 @@
         text: "log here"
         x:800
 
-        Button:
-            id: up_button
-            top: root.top
-            text: '^'
+    Button:
+        id: up_btn
+        top: root.top
+        text: '^'
 
-        Button:
-            id: down_button
-            top: self.height
-            text: 'V'
+    Button:
+        id: down_btn
+        top: self.height
+        text: 'vv'
 
+    Button:
+        id: up_halfscreen_btn
+        top: root.top
+        x: up_btn.width
+        text:'^^'
+
+    Button:
+        id: down_halfscreen_btn
+        top: self.height
+        x: down_btn.width
+        text:'vv'
+        
