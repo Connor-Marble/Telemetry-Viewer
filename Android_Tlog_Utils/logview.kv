@@ -48,12 +48,16 @@
     scroll_up: up_btn
     scroll_down: down_btn
 
+    xscroll_up: up_halfscreen_btn
+    xscroll_down: down_halfscreen_btn
+
+    line_pos: line_count
+    
     Label:
         id: scroll_label_text
-        font_size: 18
+        font_size: '18sp'
         text: "log here"
-        x:800
-
+        
     Button:
         id: up_btn
         top: root.top
@@ -62,7 +66,7 @@
     Button:
         id: down_btn
         top: self.height
-        text: 'vv'
+        text: 'v'
 
     Button:
         id: up_halfscreen_btn
@@ -76,3 +80,8 @@
         x: down_btn.width
         text:'vv'
         
+    Label:
+        id: line_count
+        text: 'lines: '
+        x: down_btn.width * 3
+        fint: '48sp'

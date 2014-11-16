@@ -14,18 +14,27 @@ class Reader(Widget):
 
     scroll_down = ObjectProperty(Button)
     scroll_up = ObjectProperty(Button)
-        
+
+    xscroll_down = ObjectProperty(Button)
+    xscroll_up = ObjectProperty(Button)
+
+    line_pos = ObjectProperty(Label)
+    
     scrollpos = 0
 
     def __init__(self, log, **kwargs):
         super(Reader,self).__init__()
         suReader = super(Reader, self)
+        
         self.scroll_down.bind(on_press=self.scroll)
         self.scroll_up.bind(on_press=self.scroll)
+
+        self.xscroll_down.bind(on_press=self.scroll)
+        self.xscroll_up.bind(on_press=self.scroll)        
+        
         lineheight = self.log_text.font_size + 4
-        self.lines=(Window.size[1]-200)/lineheight - 2
+        self.lines=int((Window.size[1]-200)/lineheight - 2)
         self.log_text.y = Window.size[1]/2
-        print(Window.size[1])
         self.log_text.text_size = (None,Window.size[1]-100)
         
         self.log_text.shorten = True
@@ -44,12 +53,29 @@ class Reader(Widget):
         self.log_text.text = log_text
         self.log_text.texture_update()
         self.log_text.x = self.log_text.texture_size[0]*0.5
-    
+
     def scroll(instance, value):
+
         buttonText = value.text
+        
+        if value == instance.scroll_down:
+            instance.scrollpos += 1
+        if value == instance.scroll_up:
+            instance.scrollpos -= 1
+        if value == instance.xscroll_down:
+            instance.scrollpos += 10
+        if value == instance.xscroll_up:
+            instance.scrollpos -= 10            
 
-        instance.scrollpos += 1 if buttonText == 'V' else -1
+        instance.scrollpos =max(0, min(instance.scrollpos,\
+                            len(instance.loglines)))
 
+        instance.line_pos.text =\
+        'lines: ' + str(instance.scrollpos) +\
+        ' - ' + str(instance.scrollpos + instance.lines) +\
+        '/' + str(len(instance.loglines))
+        
+        
         instance.DisplayLog()
 
 class TelemetryGraphScreen():
