@@ -2,8 +2,12 @@ from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
+from kivy.uix.slider import Slider
+
 from kivy.properties import ObjectProperty
+
 from kivy.core.window import Window
+
 
 from ..libs.garden.graph import Graph, MeshLinePlot
 from ..libs.Mavlink.apm_mavlink_v1 import MAVLink_vfr_hud_message
@@ -19,33 +23,42 @@ class Reader(Widget):
     xscroll_up = ObjectProperty(Button)
 
     line_pos = ObjectProperty(Label)
+
+    scrollbar = ObjectProperty(Slider)
     
     scrollpos = 0
 
+    loglines = []
+    
     def __init__(self, log, **kwargs):
         super(Reader,self).__init__()
         suReader = super(Reader, self)
+
+        lineheight = self.log_text.font_size + 4
+        self.lines=int((Window.size[1]-200)/lineheight - 2)
         
         self.scroll_down.bind(on_press=self.scroll)
         self.scroll_up.bind(on_press=self.scroll)
 
         self.xscroll_down.bind(on_press=self.scroll)
         self.xscroll_up.bind(on_press=self.scroll)        
+
+        self.scrollbar.bind(on_touch_move=self.scrollbar_moved)
+        self.scrollbar.bind(on_touch_up=self.scrollbar_released)
         
-        lineheight = self.log_text.font_size + 4
-        self.lines=int((Window.size[1]-200)/lineheight - 2)
         self.log_text.y = Window.size[1]/2
         self.log_text.text_size = (None,Window.size[1]-100)
         
         self.log_text.shorten = True
         
-        self.loglines = []
+       
         self.log = log
-                
+        
         for i in range(len(self.log)):
             line = (str(self.log[i])+'\n')
             self.loglines.append(line)
-            
+
+        self.update_scroll_pos_label()
         self.DisplayLog()
         
     def DisplayLog(self):
@@ -67,17 +80,29 @@ class Reader(Widget):
         if value == instance.xscroll_up:
             instance.scrollpos -= 10            
 
-        instance.scrollpos =max(0, min(instance.scrollpos,\
-                            len(instance.loglines)))
-
-        instance.line_pos.text =\
-        'lines: ' + str(instance.scrollpos) +\
-        ' - ' + str(instance.scrollpos + instance.lines) +\
-        '/' + str(len(instance.loglines))
-        
-        
+        instance.clamp_scroll()
+        instance.update_scroll_pos_label()
         instance.DisplayLog()
 
+    def update_scroll_pos_label(self):
+        self.line_pos.text =\
+        'lines: ' + str(self.scrollpos) +\
+        ' - ' + str(self.scrollpos + self.lines) +\
+        '/' + str(len(self.loglines))
+
+    def scrollbar_moved(instance, value, scrollvalue):
+        instance.scrollpos = int(((100-instance.scrollbar.value)/100) * len(instance.loglines))
+        instance.clamp_scroll()
+        instance.update_scroll_pos_label()
+
+    def scrollbar_released(instance, value, scrollvalue):
+        instance.DisplayLog()
+
+    def clamp_scroll(self):
+        self.scrollpos =max(0, min(self.scrollpos,\
+                            len(self.loglines)))
+        
+        
 class TelemetryGraphScreen():
     
     def __init__(self, layout,log):
