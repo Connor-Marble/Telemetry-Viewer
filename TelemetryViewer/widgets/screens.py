@@ -120,11 +120,13 @@ class TelemetryGraphScreen():
             if type(i) is MAVLink_vfr_hud_message:
                 altitudes.append(i.alt)
 
-        
+        if len(altitudes is 0):
+            return
+
         graph = Graph(size = (400,400),xlabel='packet number', ylabel='VRF HUD Alt', x_ticks_minor=5,
                       x_ticks_major=25, y_ticks_major=1,
                       y_grid_label=True, x_grid_label=True, padding=5,
-                      x_grid=True, y_grid=True, xmin=-0, xmax=len(altitudes), ymin=min(altitudes), ymax=max(altitudes))
+                      x_grid=True, y_grid=True, xmin=0, xmax=len(altitudes), ymin=min(altitudes), ymax=max(altitudes))
         plot = MeshLinePlot(color=[1, 1, 0, 1])
         plot.points = [(x, altitudes[int(x)]) for x in xrange(0, len(altitudes))]
         graph.add_plot(plot)

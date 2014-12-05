@@ -48,7 +48,7 @@ class ScreenManager(FloatLayout):
         
     def graphlog(obj,value):
         graph = TelemetryGraphScreen(obj,obj.log)
-        obj.switchscreen(graph)
+
         
     def switchscreen(self, widget, *args):
         self.clear_widgets()
