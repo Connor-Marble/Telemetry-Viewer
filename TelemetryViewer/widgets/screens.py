@@ -107,10 +107,12 @@ class TelemetryGraphScreen():
     
     def __init__(self, layout,log):
         self.log = log
-        layout.clear_widgets()
-        self.checkbox = CheckBox()
+
+
         graph = self.getgraphwidget()
-        layout.add_widget(graph)
+        if graph is not None:
+            layout.clear_widgets()
+            layout.add_widget(graph)
 
 
 
@@ -120,7 +122,7 @@ class TelemetryGraphScreen():
             if type(i) is MAVLink_vfr_hud_message:
                 altitudes.append(i.alt)
 
-        if len(altitudes is 0):
+        if len(altitudes) is 0:
             return
 
         graph = Graph(size = (400,400),xlabel='packet number', ylabel='VRF HUD Alt', x_ticks_minor=5,
