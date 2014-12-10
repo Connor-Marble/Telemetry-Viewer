@@ -12,6 +12,7 @@ from widgets.screens import Reader, TelemetryGraphScreen, StartMenu, ModeMenu, E
 
 class ScreenManager(FloatLayout):
     log = None
+    logpath = ''
     def __init__(self,**kwargs):
         super(ScreenManager,self).__init__(**kwargs)
 
@@ -31,15 +32,13 @@ class ScreenManager(FloatLayout):
         Clock.schedule_once(partial(obj.switchscreen,obj.filemenu),0.15)
 
     def openfile(obj,value,selected,event):
+        obj.logpath = selected
         obj.log = mp.TelemetryLog(selected[0]).ParsePackets()
         obj.mode_menu = ModeMenu()
-       
 
         obj.mode_menu.readbtn.bind(on_press=obj.readlog)
         obj.mode_menu.graphbtn.bind(on_press=obj.graphlog)
         obj.mode_menu.exportbtn.bind(on_press=obj.exportmenu)
-        
-        obj.mode_menu
         
         obj.switchscreen(obj.mode_menu)
 
@@ -51,7 +50,7 @@ class ScreenManager(FloatLayout):
         graph = TelemetryGraphScreen(obj,obj.log)
 
     def exportmenu(obj, value):
-        obj.switchscreen(ExportMenu())
+        obj.switchscreen(ExportMenu(obj.log,obj.logpath))
         
     def switchscreen(self, widget, *args):
         self.clear_widgets()
