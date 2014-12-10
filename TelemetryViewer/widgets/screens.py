@@ -141,5 +141,9 @@ class StartMenu(Widget):
 class ModeMenu(Widget):
     readbtn = ObjectProperty(Button)
     graphbtn = ObjectProperty(Button)
+    exportbtn = ObjectProperty(Button)
+    
     log = None
 
+class ExportMenu(Widget):
+    pass

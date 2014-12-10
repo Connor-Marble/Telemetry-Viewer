@@ -19,8 +19,9 @@
 
 <ModeMenu>:
     readbtn: read_log_button
-    graphbtn:graph_log_button
-
+    graphbtn: graph_log_button
+    exportbtn: export_log_button
+    
     Label:
         font_size: 50
         center_x: root.center_x
@@ -104,4 +105,11 @@
         orientation: 'vertical'
         value: '100dp'
 
-            
+<ExportMenu>:
+    Button:
+        id: export_text
+        font_size: 30
+        center_x: root.center_x
+        center_y: root.height * 2/3
+        width: '240dp'
+        text: "Export Text"
