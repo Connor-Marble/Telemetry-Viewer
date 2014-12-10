@@ -141,5 +141,27 @@ class StartMenu(Widget):
 class ModeMenu(Widget):
     readbtn = ObjectProperty(Button)
     graphbtn = ObjectProperty(Button)
+    exportbtn = ObjectProperty(Button)
+    
     log = None
 
+class ExportMenu(Widget):
+    def __init__(self, log, logpath):
+        super(ExportMenu, self).__init__()
+        
+        self.log = log
+        print(logpath)
+        self.logpath = logpath
+
+    def savetext(self):
+        filename = self.logpath[0]
+
+        #remove file extension if one exists
+        if '.' in filename:
+            filename = filename[:filename.rindex('.')]
+
+        filename += '.txt'
+        with open(filename, 'w') as txt:
+            for packet in self.log:
+                txt.write(str(packet)+'\n')
+        

@@ -8,10 +8,11 @@ from kivy.clock import Clock
 
 import mav_parse as mp
 from functools import partial
-from widgets.screens import Reader, TelemetryGraphScreen, StartMenu, ModeMenu
+from widgets.screens import Reader, TelemetryGraphScreen, StartMenu, ModeMenu, ExportMenu
 
 class ScreenManager(FloatLayout):
     log = None
+    logpath = ''
     def __init__(self,**kwargs):
         super(ScreenManager,self).__init__(**kwargs)
 
@@ -23,7 +24,7 @@ class ScreenManager(FloatLayout):
         
         self.filemenu = FileChooserListView()
         self.filemenu.bind(on_submit=self.openfile)
-
+        
         self.mode_menu=None
         
     def selectfile(obj,value):
@@ -31,14 +32,13 @@ class ScreenManager(FloatLayout):
         Clock.schedule_once(partial(obj.switchscreen,obj.filemenu),0.15)
 
     def openfile(obj,value,selected,event):
+        obj.logpath = selected
         obj.log = mp.TelemetryLog(selected[0]).ParsePackets()
         obj.mode_menu = ModeMenu()
-       
 
         obj.mode_menu.readbtn.bind(on_press=obj.readlog)
         obj.mode_menu.graphbtn.bind(on_press=obj.graphlog)
-
-        obj.mode_menu
+        obj.mode_menu.exportbtn.bind(on_press=obj.exportmenu)
         
         obj.switchscreen(obj.mode_menu)
 
@@ -49,6 +49,8 @@ class ScreenManager(FloatLayout):
     def graphlog(obj,value):
         graph = TelemetryGraphScreen(obj,obj.log)
 
+    def exportmenu(obj, value):
+        obj.switchscreen(ExportMenu(obj.log,obj.logpath))
         
     def switchscreen(self, widget, *args):
         self.clear_widgets()
