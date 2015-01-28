@@ -14,15 +14,18 @@ def tlog_to_kml(log, output):
 
     kmlcontents = map(position_to_kml_point, locations)
     
-    kmldoc = KML.kml(*kmlcontents)
+    kmldoc = KML.kml(KML.Document(*kmlcontents))
 
     
     with open(output, 'w') as kml_file:
         kml_file.write(etree.tostring(kmldoc, pretty_print=True))
 
 def position_to_kml_point(location):
-    kmlpoint = KML.Point()
-    return KML.Point(location)
+    kmlpoint = KML.PlaceMark(
+        KML.Location(
+            KML.latitude(location[0]),
+            KML.longitude(location[1])))
+    return kmlpoint
 
 
 if __name__=='__main__':
