@@ -1,33 +1,41 @@
 import mav_parse as mp
 from pykml.factory import KML_ElementMaker as KML
-from libs.Mavlink.apm_mavlink_v1 import MAVLink_global_position_int_message as position 
+from libs.Mavlink.apm_mavlink_v1 import\
+    MAVLink_global_position_int_message as position 
 from lxml import etree
 
 def tlog_to_kml(log, output):
+
+    INT_FLOAT_COORD_RATIO = 10000000
+    CM_PER_METER = 100
     
     isrelaventpacket = lambda x:type(x) is position
     
     locations = []
     locationpackets = filter(isrelaventpacket, log)
 
-    locations = [(x.lat, x.lon) for x in locationpackets]
+    locations = [(float(x.lon)/INT_FLOAT_COORD_RATIO,
+                  float(x.lat)/INT_FLOAT_COORD_RATIO,
+                  float(x.relative_alt)/CM_PER_METER)
+                 for x in locationpackets]
 
-    kmlcontents = map(position_to_kml_point, locations)
+    kmlcontents = KML.Placemark(KML.LineString(
+        KML.altitudeMode('absolute'),
+        KML.coordinates(linefromcords(locations))))
     
     kmldoc = KML.kml(KML.Document(*kmlcontents))
 
     
     with open(output, 'w') as kml_file:
         kml_file.write(etree.tostring(kmldoc, pretty_print=True))
-
-def position_to_kml_point(location):
-    kmlpoint = KML.PlaceMark(
-        KML.Location(
-            KML.latitude(location[0]),
-            KML.longitude(location[1])))
-    return kmlpoint
-
-
+        
+def linefromcords(coordinates):
+    coordstr = str(coordinates)[1:-2]
+    coordstr = coordstr.replace(' ', '')
+    coordstr = coordstr.replace('),', ' ')
+    coordstr = coordstr.replace('(', '')
+    return coordstr
+    
 if __name__=='__main__':
     testpath = '/Logs/2014-09-29 14-14-38.tlog'
     log = mp.TelemetryLog(testpath).ParsePackets()
