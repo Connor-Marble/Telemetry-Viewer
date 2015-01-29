@@ -7,6 +7,7 @@ from lxml import etree
 def tlog_to_kml(log, output):
 
     INT_FLOAT_COORD_RATIO = 10000000
+    CM_PER_METER = 100
     
     isrelaventpacket = lambda x:type(x) is position
     
@@ -15,7 +16,7 @@ def tlog_to_kml(log, output):
 
     locations = [(float(x.lon)/INT_FLOAT_COORD_RATIO,
                   float(x.lat)/INT_FLOAT_COORD_RATIO,
-                  float(x.relative_alt)/100)
+                  float(x.relative_alt)/CM_PER_METER)
                  for x in locationpackets]
 
     kmlcontents = KML.Placemark(KML.LineString(
