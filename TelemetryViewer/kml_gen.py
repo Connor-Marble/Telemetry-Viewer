@@ -28,10 +28,17 @@ def tlog_to_kml(log, output):
     
     with open(output, 'w') as kml_file:
         kml_file.write(etree.tostring(kmldoc, pretty_print=True))
+
+    print('saved ' + output)
         
 def linefromcords(coordinates):
+    #convert array to string and remove square brackets
     coordstr = str(coordinates)[1:-2]
+
+    #remove all spaces
     coordstr = coordstr.replace(' ', '')
+
+    #remove all parentheses and add space between points
     coordstr = coordstr.replace('),', ' ')
     coordstr = coordstr.replace('(', '')
     return coordstr
