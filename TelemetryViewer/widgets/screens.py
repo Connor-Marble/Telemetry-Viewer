@@ -3,6 +3,8 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.slider import Slider
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
 
 from kivy.properties import ObjectProperty
 
@@ -10,8 +12,9 @@ from kivy.core.window import Window
 
 
 from ..libs.garden.graph import Graph, MeshLinePlot
-from ..libs.Mavlink.apm_mavlink_v1 import MAVLink_vfr_hud_message
+from ..libs.Mavlink.apm_mavlink_v1 import MAVLink_vfr_hud_message as vfr
 
+from ..libs.garden.navigationdrawer import NavigationDrawer
 
 class Reader(Widget):
     log = None
@@ -33,8 +36,7 @@ class Reader(Widget):
     
     def __init__(self, log, **kwargs):
         super(Reader, self).__init__()
-        suReader = super(Reader, self)
-
+        
         lineheight = self.log_text.font_size + 4
         self.lines = int((Window.size[1]-200)/lineheight - 2)
         
@@ -71,8 +73,6 @@ class Reader(Widget):
 
     def scroll(instance, value):
 
-        buttonText = value.text
-        
         if value == instance.scroll_down:
             instance.scrollpos += 1
         if value == instance.scroll_up:
@@ -113,23 +113,23 @@ class TelemetryGraphScreen():
     def __init__(self, layout, log):
         self.log = log
 
-        graph = self.getgraphwidget()
+        graph = self.getgraphwidget(vfr, 'alt')
         if graph is not None:
             layout.clear_widgets()
             layout.add_widget(graph)
 
-    def getgraphwidget(self):
+    def getgraphwidget(self, messagetype, fieldname):
         altitudes = []
         for i in self.log:
-            if type(i) is MAVLink_vfr_hud_message:
-                altitudes.append(i.alt)
+            if type(i) is messagetype:
+                altitudes.append(eval('i.' + fieldname))
 
         if len(altitudes) is 0:
             return
 
         graph = Graph(size=(400, 400),
                       xlabel='packet number',
-                      ylabel='VRF HUD Alt', x_ticks_minor=5,
+                      ylabel=fieldname, x_ticks_minor=5,
                       x_ticks_major=25, y_ticks_major=1,
                       y_grid_label=True, x_grid_label=True, padding=5,
                       x_grid=True, y_grid=True, xmin=0, xmax=len(altitudes),
@@ -140,8 +140,29 @@ class TelemetryGraphScreen():
                        x in xrange(0, len(altitudes))]
         
         graph.add_plot(plot)
-        return graph
-    
+        return self.getdatapanel(graph)
+
+    def getdatapanel(self, main_panel):
+        datadrawer = NavigationDrawer()
+        drawerview = ScrollView()
+        drawercontents = GridLayout(cols=2)
+        
+        drawercontents.add_widget(Label(text='Select'))
+        drawercontents.add_widget(Label(text='Data'))
+        
+        drawercontents.add_widget(CheckBox(group='data', active=True))
+        drawercontents.add_widget(Label(text='Altitude'))
+
+        drawercontents.add_widget(CheckBox(group='data'))
+        drawercontents.add_widget(Label(text='GPS Count'))
+
+        drawerview.add_widget(drawercontents)
+        
+        datadrawer.add_widget(drawerview)
+        datadrawer.add_widget(main_panel)
+        
+        return datadrawer
+
     
 class StartMenu(Widget):
     filebtn = ObjectProperty(Button)
