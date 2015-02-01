@@ -12,9 +12,10 @@ from kivy.core.window import Window
 
 
 from ..libs.garden.graph import Graph, MeshLinePlot
-from ..libs.Mavlink.apm_mavlink_v1 import MAVLink_vfr_hud_message as vfr
+from ..libs.Mavlink.apm_mavlink_v1 import MAVLink_vfr_hud_message
 
 from ..libs.garden.navigationdrawer import NavigationDrawer
+from ..kml_gen import tlog_to_kml
 
 class Reader(Widget):
     log = None
@@ -37,6 +38,7 @@ class Reader(Widget):
     def __init__(self, log, **kwargs):
         super(Reader, self).__init__()
         
+
         lineheight = self.log_text.font_size + 4
         self.lines = int((Window.size[1]-200)/lineheight - 2)
         
@@ -73,6 +75,8 @@ class Reader(Widget):
 
     def scroll(instance, value):
 
+        buttonText = value.text
+        
         if value == instance.scroll_down:
             instance.scrollpos += 1
         if value == instance.scroll_up:
@@ -197,5 +201,12 @@ class ExportMenu(Widget):
                 txt.write(str(packet)+'\n')
 
     def savekml(self):
-        pass
+        filename = self.logpath[0]
+
+        # remove file extension if one exists
+        if '.' in filename:
+            filename = filename[:filename.rindex('.')]
+
+        filename += '.kml'
+        tlog_to_kml(self.log, filename)
         
