@@ -28,7 +28,7 @@ source.include_exts = py,png,jpg,kv,atlas
 version = 0.0.1
 
 # (list) Application requirements
-requirements = kivy
+requirements = kivy, pykml
 
 # (list) Garden requirements
 garden_requirements = graph
