@@ -1,4 +1,5 @@
 from libs.Mavlink.apm_mavlink_v1 import *
+from kivy.uix.progressbar import ProgressBar
 
 import sys
 import struct
@@ -6,10 +7,11 @@ import struct
 class TelemetryLog():
     def __init__(self,filepath):
         self.filepath = filepath
-        self.packets = self.ParsePackets()
+
         
     #return list of packets in file
-    def ParsePackets(self):
+    def ParsePackets(self, pBar):
+
         tlog = open(self.filepath,'r')
         mav = MAVLink(tlog)
         packets = []
@@ -22,13 +24,18 @@ class TelemetryLog():
         for i in range(len(log_bytes)):
             logstring += chr(int(log_bytes[i]))
 
-        while len(logstring)>6:
-            packet_len = ord(logstring[1])+8
+            try:
+                while len(logstring)>6:
+                    packet_len = ord(logstring[1])+8
+                    
+                    packet = mav.decode(logstring[0:packet_len])
+                    packets.append(packet)
+                    logstring =  logstring[packet_len+8:]
 
-
-            packet = mav.decode(logstring[0:packet_len])
-            packets.append(packet)
-            logstring =  logstring[packet_len+8:]
+            except MAVError as error:
+                print("Parsing Error: ")
+                print error
+                return None
 
         return packets
              

@@ -5,6 +5,8 @@ from kivy.base import EventLoop
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserListView
 from kivy.clock import Clock
+from kivy.uix.progressbar import ProgressBar
+
 
 import mav_parse as mp
 from functools import partial
@@ -35,10 +37,16 @@ class ScreenManager(FloatLayout):
         Clock.schedule_once(partial(obj.switchscreen, obj.filemenu), 0.15)
 
     def openfile(obj, value, selected, event):
+        progBar = ProgressBar()
+        
         obj.logpath = selected
-        obj.log = mp.TelemetryLog(selected[0]).ParsePackets()
+        obj.log = mp.TelemetryLog(selected[0]).ParsePackets(progBar)
+        
+        if obj.log is None:
+            return
+        
         obj.mode_menu = ModeMenu()
-
+        obj.filemenu.add_widget(progBar)
         obj.mode_menu.readbtn.bind(on_press=obj.readlog)
         obj.mode_menu.graphbtn.bind(on_press=obj.graphlog)
         obj.mode_menu.exportbtn.bind(on_press=obj.exportmenu)
