@@ -24,18 +24,18 @@ class TelemetryLog():
         for i in range(len(log_bytes)):
             logstring += chr(int(log_bytes[i]))
 
-            try:
-                while len(logstring)>6:
-                    packet_len = ord(logstring[1])+8
-                    
-                    packet = mav.decode(logstring[0:packet_len])
-                    packets.append(packet)
-                    logstring =  logstring[packet_len+8:]
-
-            except MAVError as error:
-                print("Parsing Error: ")
-                print error
-                return None
+        try:
+            while len(logstring)>6:
+                packet_len = ord(logstring[1])+8
+                
+                packet = mav.decode(logstring[0:packet_len])
+                packets.append(packet)
+                logstring =  logstring[packet_len+8:]
+                
+        except MAVError as error:
+            print("Parsing Error: ")
+            print error
+            return None
 
         return packets
              
