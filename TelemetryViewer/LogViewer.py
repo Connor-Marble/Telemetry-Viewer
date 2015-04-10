@@ -37,16 +37,16 @@ class ScreenManager(FloatLayout):
         Clock.schedule_once(partial(obj.switchscreen, obj.filemenu), 0.15)
 
     def openfile(obj, value, selected, event):
-        progBar = ProgressBar()
+        progbar = ProgressBar()
         
         obj.logpath = selected
-        obj.log = mp.TelemetryLog(selected[0]).ParsePackets(progBar)
+        obj.log = mp.TelemetryLog(selected[0], progbar, None).packets
         
         if obj.log is None:
             return
         
         obj.mode_menu = ModeMenu()
-        obj.filemenu.add_widget(progBar)
+        obj.filemenu.add_widget(progbar)
         obj.mode_menu.readbtn.bind(on_press=obj.readlog)
         obj.mode_menu.graphbtn.bind(on_press=obj.graphlog)
         obj.mode_menu.exportbtn.bind(on_press=obj.exportmenu)

@@ -5,12 +5,12 @@ import sys
 import struct
 
 class TelemetryLog():
-    def __init__(self,filepath):
+    def __init__(self,filepath, progbar, callback):
         self.filepath = filepath
-
+        self.packets = self.ParsePackets(progbar)
         
     #return list of packets in file
-    def ParsePackets(self, pBar):
+    def ParsePackets(self, progbar):
 
         tlog = open(self.filepath,'r')
         mav = MAVLink(tlog)
