@@ -17,22 +17,25 @@ class TelemetryLog():
         tlog = open(self.filepath,'r')
         mav = MAVLink(tlog)
         packets = []
+        
         log_bytes = bytearray(tlog.read())
         log_bytes = log_bytes[8:]
-
-        file_end = False
 
         logstring = ''
         for i in range(len(log_bytes)):
             logstring += chr(int(log_bytes[i]))
 
+        
         try:
-            while len(logstring)>6:
-                packet_len = ord(logstring[1])+8
+            pack_start = 0
+            
+            while len(logstring)-pack_start>6:
+                packet_len = ord(logstring[pack_start+1])+8
                 
-                packet = mav.decode(logstring[0:packet_len])
+                packet = mav.decode(
+                    logstring[pack_start:packet_len+pack_start])
                 packets.append(packet)
-                logstring =  logstring[packet_len+8:]
+                pack_start += packet_len+8
                 
         except MAVError as error:
             print("Parsing Error: ")
