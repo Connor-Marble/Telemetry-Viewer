@@ -1,13 +1,15 @@
 from libs.Mavlink.apm_mavlink_v1 import *
 from kivy.uix.progressbar import ProgressBar
+from kivy.clock import Clock
 
 import sys
 import struct
 
 class TelemetryLog():
-    def __init__(self,filepath, progbar, callback):
+    def __init__(self,filepath, progbar, postread_cb):
         self.filepath = filepath
         self.packets = self.ParsePackets(progbar)
+        Clock.schedule_once(postread_cb)
         
     #return list of packets in file
     def ParsePackets(self, progbar):
