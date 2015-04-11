@@ -40,7 +40,7 @@ class ScreenManager(FloatLayout):
         progbar = ProgressBar()
         
         obj.logpath = selected
-        obj.filemenu.add_widget(progbar)
+        obj.switchscreen(progbar)
         obj.tlog = mp.TelemetryLog(selected[0], progbar, obj.postopen)
 
     def postopen(self, dt):
