@@ -1,45 +1,67 @@
 from libs.Mavlink.apm_mavlink_v1 import *
 from kivy.uix.progressbar import ProgressBar
+from kivy.clock import Clock
+from functools import partial
 
 import sys
 import struct
 
 class TelemetryLog():
-    def __init__(self,filepath):
+    decode_iterations = 100 #decode iterations per frame
+    
+    def __init__(self,filepath, progbar, postread_cb):
         self.filepath = filepath
-
+        self.postread_cb = postread_cb
+        self.ParsePackets(progbar)
         
     #return list of packets in file
-    def ParsePackets(self, pBar):
+    def ParsePackets(self, progbar):
 
         tlog = open(self.filepath,'r')
-        mav = MAVLink(tlog)
+        self.mav = MAVLink(tlog)
         packets = []
+        
         log_bytes = bytearray(tlog.read())
         log_bytes = log_bytes[8:]
-
-        file_end = False
 
         logstring = ''
         for i in range(len(log_bytes)):
             logstring += chr(int(log_bytes[i]))
 
-        try:
-            while len(logstring)>6:
+        self.packets = []
+        progbar.max = len(logstring)
+        Clock.schedule_once(partial(self.decode_packet,
+                                    logstring, progbar,
+                                    len(logstring)))
+        
+    def decode_packet(self, logstring, progbar,initial_len,  dt):
+        for i in xrange(self.decode_iterations):
+            
+                
+            try:
+            
                 packet_len = ord(logstring[1])+8
-                
-                packet = mav.decode(logstring[0:packet_len])
-                packets.append(packet)
-                logstring =  logstring[packet_len+8:]
-                
-        except MAVError as error:
-            print("Parsing Error: ")
-            print error
-            return None
+            
+                packet = self.mav.decode(
+                    logstring[0:packet_len])
+                self.packets.append(packet)
+                logstring = logstring[packet_len+8:]
+                progbar.value = initial_len-len(logstring)
+            
+            except MAVError as error:
+                print("Parsing Error: ")
+                print error
+                return None
 
-        return packets
-             
-
+            if(len(logstring)<6):
+                Clock.schedule_once(self.postread_cb)
+                return
+            
+        Clock.schedule_once(partial(self.decode_packet,
+                                    logstring,
+                                    progbar,
+                                    initial_len))
+        
 if __name__ == '__main__':
     try:
         log_path = str(sys.argv[1])
