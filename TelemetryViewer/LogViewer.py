@@ -6,7 +6,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserListView
 from kivy.clock import Clock
 from kivy.uix.progressbar import ProgressBar
-
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 
 import mav_parse as mp
 from functools import partial
@@ -63,6 +64,10 @@ class ScreenManager(FloatLayout):
     def posterror(self, message, dt):
         print(message)
         self.switchscreen(self.startmenu)
+        errorpopup = Popup(title='Error',
+                      content=Label(text=message),
+                           size_hint=(None, None), size=(600,200))
+        errorpopup.open()
         
     def readlog(obj, value):
         rl = Reader(obj.log)
