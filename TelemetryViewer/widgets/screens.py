@@ -5,6 +5,7 @@ from kivy.uix.checkbox import CheckBox
 from kivy.uix.slider import Slider
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.popup import Popup
 
 from kivy.properties import ObjectProperty
 
@@ -191,7 +192,7 @@ class ExportMenu(Widget):
     def savetext(self):
         filename = self.logpath[0]
 
-        # remove file extension if one exists
+        #remove file extension if one exists
         if '.' in filename:
             filename = filename[:filename.rindex('.')]
 
@@ -199,6 +200,7 @@ class ExportMenu(Widget):
         with open(filename, 'w') as txt:
             for packet in self.log:
                 txt.write(str(packet)+'\n')
+        self.savedpopup(filename)
 
     def savekml(self):
         filename = self.logpath[0]
@@ -209,4 +211,10 @@ class ExportMenu(Widget):
 
         filename += '.kml'
         tlog_to_kml(self.log, filename)
-        
+        self.savedpopup(filename)
+
+    def savedpopup(self, name):
+        popup = Popup(title='File Saved',
+                      content=Label(text='File saved at: '+name),
+                      size_hint=(None, None), size=(400, 300))
+        popup.open()
