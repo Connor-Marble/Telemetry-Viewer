@@ -7,12 +7,15 @@ import sys
 import struct
 
 class TelemetryLog():
-    decode_iterations = 100 #decode iterations per frame
+
     
-    def __init__(self,filepath, progbar, postread_cb):
+    def __init__(self,filepath, progbar, postread_cb, error_cb):
         self.filepath = filepath
         self.postread_cb = postread_cb
+        self.error_cb = error_cb
         self.ParsePackets(progbar)
+        self.decode_iterations = 100 #decode iterations per frame
+        
         
     #return list of packets in file
     def ParsePackets(self, progbar):
@@ -49,9 +52,15 @@ class TelemetryLog():
                 progbar.value = initial_len-len(logstring)
             
             except MAVError as error:
-                print("Parsing Error: ")
-                print error
-                return None
+                message = "Parsing Error:" + error.message
+                Clock.schedule_once(partial(self.error_cb, message))
+                return
+
+            except:
+                message = sys.exc_info()[:2]
+                Clock.schedule_once(partial(self.error_cb,
+                                            "Log Parse failed:" + str(message)[1:-1]))
+                return
 
             if(len(logstring)<6):
                 Clock.schedule_once(self.postread_cb)

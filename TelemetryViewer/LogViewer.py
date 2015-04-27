@@ -41,8 +41,9 @@ class ScreenManager(FloatLayout):
         
         obj.logpath = selected
         obj.switchscreen(progbar)
-        obj.tlog = mp.TelemetryLog(selected[0], progbar, obj.postopen)
+        obj.tlog = mp.TelemetryLog(selected[0], progbar, obj.postopen, obj.posterror)
 
+    #callback for succesfully opening a log
     def postopen(self, dt):
         
         if self.tlog is None:
@@ -57,6 +58,12 @@ class ScreenManager(FloatLayout):
         
         self.switchscreen(self.mode_menu)
 
+    #callback for encountering an error
+    #while opening a log
+    def posterror(self, message, dt):
+        print(message)
+        self.switchscreen(self.startmenu)
+        
     def readlog(obj, value):
         rl = Reader(obj.log)
         obj.switchscreen(rl)
