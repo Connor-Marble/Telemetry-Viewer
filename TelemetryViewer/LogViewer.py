@@ -6,7 +6,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserListView
 from kivy.clock import Clock
 from kivy.uix.progressbar import ProgressBar
-
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 
 import mav_parse as mp
 from functools import partial
@@ -41,8 +42,9 @@ class ScreenManager(FloatLayout):
         
         obj.logpath = selected
         obj.switchscreen(progbar)
-        obj.tlog = mp.TelemetryLog(selected[0], progbar, obj.postopen)
+        obj.tlog = mp.TelemetryLog(selected[0], progbar, obj.postopen, obj.posterror)
 
+    #callback for succesfully opening a log
     def postopen(self, dt):
         
         if self.tlog is None:
@@ -57,6 +59,16 @@ class ScreenManager(FloatLayout):
         
         self.switchscreen(self.mode_menu)
 
+    #callback for encountering an error
+    #while opening a log
+    def posterror(self, message, dt):
+        print(message)
+        self.switchscreen(self.startmenu)
+        errorpopup = Popup(title='Error',
+                      content=Label(text=message),
+                           size_hint=(None, None), size=(600,200))
+        errorpopup.open()
+        
     def readlog(obj, value):
         rl = Reader(obj.log)
         obj.switchscreen(rl)
